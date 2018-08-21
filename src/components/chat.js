@@ -9,7 +9,8 @@ class Chat extends Component {
     }
 
     componentDidMount(){
-        
+        this.props.login();
+        this.updatePrevious();
     }
 
     onType = (e) => {
@@ -20,53 +21,46 @@ class Chat extends Component {
     onSubmit = (e) => {
         e.preventDefault();
         //to firebase
-        let dateSent = new Date(); //doesn't reach db - WHYYYY
-       // console.log(dateSent); okej, den existerar. 
+        let dateSent = new Date();
+        let date = dateSent.getTime();
         let sendMsg = { message: this.state.typingMsg, 
-            date: dateSent, user: {name: this.props.user.displayName,
+            date: date, user: {name: this.props.user.displayName,
                 email:this.props.user.email}
             };
-        firebase.database().ref(`/chat/${dateSent}`).push(sendMsg);
-        //updating state
+        firebase.database().ref(`/chat/`).push(sendMsg);
+
+        //reset state
         this.setState({typingMsg: ''});
-        this.updatePrevious();
     }
 
     updatePrevious = () => {
         firebase.database().ref(`/chat`)
         .limitToLast(5)
-        .on('value', function(snapshot){
-            console.log(snapshot.val());
-          //  let newDisplay= this.toArray(snapshot.val());
-           // this.setState({prevMsgs: newDisplay});
+        .on('value', (snapshot) => {
+            let newDisplay= snapshot.val();
+            console.log(newDisplay);
+            let msgArray= Object.values(newDisplay);
+            console.log(msgArray);
+            this.setState({prevMsgs: msgArray});
         });
-
     }
 
-     toArray = (firebaseObject) => {
-        let array = []
-        for (let item in firebaseObject) {
-          array.push({ ...firebaseObject[item], key: item })
-        }
-        return array;
-  }
-
     render() {
-        let previousMessages = this.state.prevMsgs.map((message) => {
-            return (<div key={message.date}> 
-                <small>{message.date}</small>
-                <p>{message.user.name} says: </p>
-                <p>{message.message}</p>
+        //date.toISOString()
+        let previousMessages = this.state.prevMsgs.map((date) => {
+            return (<div key={date.date}> 
+                <p> <small>{date.date}</small> {date.user.name} says: </p>
+                <p>{date.message}</p>
             </div>)
         });
         return(
             <div className="chat">
-                <div className="prevMsg">
+                <div className="flex-col chat-feed">
                 {previousMessages}
                 </div>
                 <form onSubmit={this.onSubmit} className="flex-col">
                     <label htmlFor="yourMessage">Tell us something!</label>
-                    <textarea onChange={this.onType} id="yourMessage"/>
+                    <textarea onChange={this.onType} id="yourMessage" value={this.state.typingMsg}/>
                     <input type="submit" value="send" />
                 </form>
             </div>

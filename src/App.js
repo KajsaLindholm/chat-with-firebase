@@ -5,7 +5,8 @@ import Chat from './components/chat'
 
 class App extends Component {
   state = {
-    user: ''
+    user: '',
+    title: "Feed the Chat"
   }
 
 
@@ -18,6 +19,11 @@ class App extends Component {
     this.onLogin();
   }
 
+  Signout = () => {
+    firebase.auth().signOut();
+    this.onLogin();
+  }
+
   onLogin = () => {
     firebase
     .auth()
@@ -25,18 +31,16 @@ class App extends Component {
       if (user) {
         this.setState({ user })
       } else {
-        this.setState({ user: {} })
+        this.setState({ user: "" })
       }
     });}
-
-  //missing a logout function
 
   render() {
     if(this.state.user === "") {
          return (
         <div className="App">
           <header>
-            <h1>Hello</h1>
+            <h1>{this.state.title}</h1>
           </header>
           <button onClick={this.Login}>please sign in</button>
         </div>
@@ -45,10 +49,10 @@ class App extends Component {
       return (
         <div className="App">
           <header>
-          <button  className="signout">Sign out</button>
-            <h1>Welcome {this.state.user.displayName} </h1>
+          <button  className="signout" onClick={this.Signout}>Sign out</button>
+            <h1>{this.state.title} </h1>
           </header>
-          <Chat user={this.state.user} />
+          <Chat user={this.state.user} login={this.onLogin}/>
         </div>
       );
     }

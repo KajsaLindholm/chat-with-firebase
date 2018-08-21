@@ -2,6 +2,8 @@
   "name": "login-randomchat",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://KajsaLindholm.github.io/chat-with-firebase",
+
   "dependencies": {
     "firebase": "^5.4.0",
     "react": "^16.4.2",
@@ -14,4 +16,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
+ 
 }

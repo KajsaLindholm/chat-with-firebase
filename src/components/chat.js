@@ -38,19 +38,20 @@ class Chat extends Component {
         .limitToLast(5)
         .on('value', (snapshot) => {
             let newDisplay= snapshot.val();
-            console.log(newDisplay);
-            let msgArray= Object.values(newDisplay);
-            console.log(msgArray);
+            let msgArray= Object.values(newDisplay); //turns object ot array
             this.setState({prevMsgs: msgArray});
         });
     }
 
     render() {
         //date.toISOString()
-        let previousMessages = this.state.prevMsgs.map((date) => {
-            return (<div key={date.date}> 
-                <p> <small>{date.date}</small> {date.user.name} says: </p>
-                <p>{date.message}</p>
+        let previousMessages = this.state.prevMsgs.map((message) => {
+            let date = new Date(message.date).toString();
+
+            return (<div key={message.date}> 
+                <small>{date}</small>
+                <p>{message.user.name} says: </p>
+                <p>{message.message}</p>
             </div>)
         });
         return(

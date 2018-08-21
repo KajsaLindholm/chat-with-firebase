@@ -30,15 +30,19 @@ class App extends Component {
     if(this.state.user === "") {
          return (
         <div className="App">
-          <h1>Hello</h1>
+          <header>
+            <h1>Hello</h1>
+          </header>
           <button onClick={this.Login}>please sign in</button>
         </div>
       );
     } else {
       return (
         <div className="App">
-          <h1>Welcome {this.state.user.displayName} </h1>
-          <button onClick={this.onLogin} className="signout">Sign out when you're done</button>
+          <header>
+          <button onClick={this.onLogin} className="signout">Sign out</button>
+            <h1>Welcome {this.state.user.displayName} </h1>
+          </header>
           <Chat user={this.state.user} />
         </div>
       );

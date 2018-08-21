@@ -8,6 +8,10 @@ class Chat extends Component {
         prevMsgs: [],
     }
 
+    componentDidMount(){
+        
+    }
+
     onType = (e) => {
         let newText = e.target.value;
         this.setState({typingMsg: newText});
@@ -17,25 +21,26 @@ class Chat extends Component {
         e.preventDefault();
         //to firebase
         let dateSent = new Date(); //doesn't reach db - WHYYYY
+       // console.log(dateSent); okej, den existerar. 
         let sendMsg = { message: this.state.typingMsg, 
             date: dateSent, user: {name: this.props.user.displayName,
                 email:this.props.user.email}
             };
-        firebase.database().ref(`/chat`).push(sendMsg);
+        firebase.database().ref(`/chat/${dateSent}`).push(sendMsg);
         //updating state
         this.setState({typingMsg: ''});
         this.updatePrevious();
     }
 
     updatePrevious = () => {
-        let lastFiveMsg = firebase.database().ref(`/chat`)
-        .orderByChild('date')
-        .limitToFirst(5)
+        firebase.database().ref(`/chat`)
+        .limitToLast(5)
         .on('value', function(snapshot){
             console.log(snapshot.val());
+          //  let newDisplay= this.toArray(snapshot.val());
+           // this.setState({prevMsgs: newDisplay});
         });
-        let newDisplay= this.toArray(lastFiveMsg);
-        this.setState({prevMsgs: newDisplay})
+
     }
 
      toArray = (firebaseObject) => {
@@ -48,11 +53,11 @@ class Chat extends Component {
 
     render() {
         let previousMessages = this.state.prevMsgs.map((message) => {
-            <div key={message.date}> 
+            return (<div key={message.date}> 
                 <small>{message.date}</small>
                 <p>{message.user.name} says: </p>
                 <p>{message.message}</p>
-            </div>
+            </div>)
         });
         return(
             <div className="chat">

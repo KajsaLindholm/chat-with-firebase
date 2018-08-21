@@ -8,6 +8,11 @@ class App extends Component {
     user: ''
   }
 
+
+  componentDidMount(){
+    this.onLogin();        
+  }
+
   Login = () => {
     firebase.auth().signInWithPopup(provider);
     this.onLogin();
@@ -40,7 +45,7 @@ class App extends Component {
       return (
         <div className="App">
           <header>
-          <button onClick={this.onLogin} className="signout">Sign out</button>
+          <button  className="signout">Sign out</button>
             <h1>Welcome {this.state.user.displayName} </h1>
           </header>
           <Chat user={this.state.user} />

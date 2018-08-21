@@ -24,6 +24,8 @@ class App extends Component {
       }
     });}
 
+  //missing a logout function
+
   render() {
     if(this.state.user === "") {
          return (
@@ -36,7 +38,7 @@ class App extends Component {
       return (
         <div className="App">
           <h1>Welcome {this.state.user.displayName} </h1>
-          <button onClick={this.Login} className="signout">Sign out when you're done</button>
+          <button onClick={this.onLogin} className="signout">Sign out when you're done</button>
           <Chat user={this.state.user} />
         </div>
       );

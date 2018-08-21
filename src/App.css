@@ -6,3 +6,11 @@
   height: 80vh;
   margin: 2rem;
 }
+
+.flex-col{
+  display: flex;
+  flex-direction: column;
+}
+textarea{
+  min-height: 100px;
+}

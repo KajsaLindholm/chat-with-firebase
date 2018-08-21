@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase, {provider} from '../firebase';
+import firebase from '../firebase';
 
 
 class Chat extends Component {
@@ -14,10 +14,13 @@ class Chat extends Component {
     }
 
     onSubmit = (e) => {
+        e.preventDefault();
         //to firebase
-        let dateSent = new Date();
+        let dateSent = new Date(); //doesn't reach db - WHYYYY
         let sendMsg = { message: this.state.typingMsg, 
-            date: dateSent, user: this.props.user};
+            date: dateSent, user: {name: this.props.user.displayName,
+                email:this.props.user.email}
+            };
         firebase.database().ref(`/chat`).push(sendMsg);
         //updating state
         this.setState({typingMsg: ''});
@@ -31,13 +34,23 @@ class Chat extends Component {
         .on('value', function(snapshot){
             console.log(snapshot.val());
         });
+        let newDisplay= this.toArray(lastFiveMsg);
+        this.setState({prevMsgs: newDisplay})
     }
+
+     toArray = (firebaseObject) => {
+        let array = []
+        for (let item in firebaseObject) {
+          array.push({ ...firebaseObject[item], key: item })
+        }
+        return array;
+  }
 
     render() {
         let previousMessages = this.state.prevMsgs.map((message) => {
             <div key={message.date}> 
                 <small>{message.date}</small>
-                <p>{message.user.displayName} says: </p>
+                <p>{message.user.name} says: </p>
                 <p>{message.message}</p>
             </div>
         });
@@ -46,8 +59,9 @@ class Chat extends Component {
                 <div className="prevMsg">
                 {previousMessages}
                 </div>
-                <form onSubmit={this.onSubmit}>
-                    <textarea onChange={this.onType}/>
+                <form onSubmit={this.onSubmit} className="flex-col">
+                    <label htmlFor="yourMessage">Tell us something!</label>
+                    <textarea onChange={this.onType} id="yourMessage"/>
                     <input type="submit" value="send" />
                 </form>
             </div>
